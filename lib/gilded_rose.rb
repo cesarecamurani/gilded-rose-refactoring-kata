@@ -25,6 +25,18 @@ class GildedRose
     return item.quality, item.sell_in
   end
 
+  def update_backstage_pass(item)
+    if item.quality < MAX_QUALITY
+      if item.sell_in > 10
+        item.quality += 1
+      elsif item.sell_in <= 10
+        item.quality += 2
+      elsif item.sell_in < 6
+        item.quality += 3
+      end
+    end
+  end
+
   def expired(item)
     item.sell_in <= 0
   end
