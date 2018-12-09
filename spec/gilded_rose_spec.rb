@@ -84,7 +84,7 @@ describe GildedRose do
       end
     end
 
-    context 'when item is Backstage passes to a TAFKAL80ETC concert' do
+    context 'when item is Backstage pass for a Metallica concert' do
       context 'when sell_in is greater than 10' do
         it 'increases quality by one after each day' do
           item = Item.new("Backstage pass for a Metallica concert", 15, 0)

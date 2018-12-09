@@ -6,31 +6,39 @@ class GildedRose
 
   def update_quality
     @items.each do |item|
-      if !aged_brie(item) && !backstage(item)
-        if item.quality > 0
+
+      if !aged_brie(item) && !backstage(item) && item.quality > 0
+
           if !sulfuras(item)
             decrease_quality(item)
           end
-        end
+
+
       else
+
         if item.quality < 50
           increase_quality(item)
+
           if backstage(item)
-            if item.sell_in < 11
-              if item.quality < 50
-                increase_quality(item)
-              end
+
+            if item.sell_in < 11 && item.quality < 50
+              increase_quality(item)
             end
+
             if item.sell_in < 6 && item.quality < 50
               increase_quality(item)
             end
+
           end
+
         end
       end
+
       if !sulfuras(item)
         decrease_sell_in(item)
       end
-      if item.sell_in < 0
+
+      if expired(item)
         if !aged_brie(item)
           if !backstage(item)
             if item.quality > 0
@@ -38,14 +46,17 @@ class GildedRose
                 decrease_quality(item)
               end
             end
+
           else
-            item.quality = item.quality - item.quality
+            item.quality -= item.quality
           end
+
         else
           if item.quality < 50
             increase_quality(item)
           end
         end
+
       end
     end
   end
@@ -62,6 +73,10 @@ end
 
 def decrease_sell_in(item)
   item.sell_in -= 1
+end
+
+def expired(item)
+  item.sell_in < 0
 end
 
 def aged_brie(item)
