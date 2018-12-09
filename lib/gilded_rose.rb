@@ -16,8 +16,10 @@ class GildedRose
   end
 
   def update_aged_brie(item)
-    if item.quality < MAX_QUALITY
-      expired(item) ? item.quality += 2 : item.quality += 1
+    if item.quality < 49 && expired(item)
+      item.quality += 2
+    elsif item.quality < 50
+      item.quality += 1
     end
   end
 
@@ -26,14 +28,14 @@ class GildedRose
   end
 
   def update_backstage_pass(item)
-    if item.quality < MAX_QUALITY
-      if item.sell_in > 10
-        item.quality += 1
-      elsif item.sell_in <= 10
-        item.quality += 2
-      elsif item.sell_in < 6
-        item.quality += 3
-      end
+    if expired(item)
+      item.quality -= item.quality
+    elsif item.quality < (MAX_QUALITY - 2) && item.sell_in < 6
+      item.quality += 3
+    elsif item.quality < (MAX_QUALITY - 1) && item.sell_in <= 10
+      item.quality += 2
+    elsif item.quality < MAX_QUALITY && item.sell_in > 10
+      item.quality += 1
     end
   end
 
