@@ -73,13 +73,13 @@ describe GildedRose do
     context 'when item is Sulfuras, Hand of Ragnaros' do
       it 'does not change sell_in' do
         item = Item.new(GildedRose::SULFURAS, 1, 80)
-        GildedRose.new([item]).update_quality
+        GildedRose.new([item]).update_sulfuras(item)
         expect(item.sell_in).to eq(1)
       end
 
       it 'does not change quality' do
         item = Item.new(GildedRose::SULFURAS, 1, 80)
-        GildedRose.new([item]).update_quality
+        GildedRose.new([item]).update_sulfuras(item)
         expect(item.quality).to eq(80)
       end
     end

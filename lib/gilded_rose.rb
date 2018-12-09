@@ -21,6 +21,10 @@ class GildedRose
     end
   end
 
+  def update_sulfuras(item)
+    return item.quality, item.sell_in
+  end
+
   def expired(item)
     item.sell_in <= 0
   end
