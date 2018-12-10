@@ -13,22 +13,23 @@ class GildedRose
   def update_quality()
     @items.each do |item|
       lower_sell_in(item)
-      check_general_quality(item)
+      check_generic_quality(item)
       check_if_backstage(item)
       check_is_aged_brie(item)
     end
   end
 
-  def check_if_backstage(item)
-    increase_if_ten_to_six(item) && increase_if_five_to_zero(item) if item.name == BACKSTAGE_PASS
-  end
 
   def expired(item)
     item.sell_in < 0
   end
 
   def is_backstage_pass?(item)
-    item.name == BACKSTAGE_PASS ? set_quality_to_zero(item) : decrease_if_not_sulfuras(item)
+    item.name == BACKSTAGE_PASS ? set_quality_to_zero(item) : reached_min_quality?(item)
+  end
+
+  def check_if_backstage(item)
+    increase_if_ten_to_six(item) && increase_if_five_to_zero(item) if item.name == BACKSTAGE_PASS
   end
 
   def check_is_aged_brie(item)
@@ -36,31 +37,25 @@ class GildedRose
   end
 
   def lower_sell_in(item)
-    item.name == SULFURAS ? item.sell_in : decrease_sell_in(item)
+    item.name == SULFURAS ? item.sell_in : item.sell_in -= 1
   end
 
-  def sulfuras_quality(item)
-    item.name == SULFURAS ? item.quality : decrease_quality(item)
-  end
-
-  def check_general_quality(item)
+  def check_generic_quality(item)
     generic_item(item) ? reached_min_quality?(item) : reached_max_quality?(item)
   end
 
-  def decrease_if_not_sulfuras(item)
-    item.quality > MIN_QUALITY ? sulfuras_quality(item) : item.quality
+
+
+  def lower_quality(item)
+    item.name == SULFURAS ? item.quality : decrease_quality(item)
   end
 
-  def decrease_sell_in(item)
-    item.sell_in -= 1
+  def reached_min_quality?(item)
+    item.quality > MIN_QUALITY ? lower_quality(item) : item.quality
   end
 
   def reached_max_quality?(item)
     item.quality < MAX_QUALITY ? increase_quality(item) : item.quality
-  end
-
-  def reached_min_quality?(item)
-    item.quality > MIN_QUALITY ? decrease_quality(item) : item.quality
   end
 
   def increase_quality(item)
