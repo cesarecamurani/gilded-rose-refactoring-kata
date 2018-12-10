@@ -13,38 +13,23 @@ class GildedRose
   def update_quality()
     @items.each do |item|
 
-      check_if_sulfuras_sell_in(item)
-
-      if generic_item(item)
-        check_min_quality(item)
-      else
-        check_max_quality(item)
-      end
+      lower_sell_in(item)
+      check_quality(item)
 
       if item.name == BACKSTAGE_PASS
         increase_if_ten_to_six(item)
         increase_if_five_to_zero(item)
       end
 
-
       if expired(item)
 
         if item.name != AGED_BRIE
-          if item.name != BACKSTAGE_PASS
-
-             decrease_if_not_sulfuras(item)
-
-
-          else
-            set_quality_to_zero(item)
-          end
-
+          item.name == BACKSTAGE_PASS ? set_quality_to_zero(item) : decrease_if_not_sulfuras(item)
         else
-          check_max_quality(item)
+          reached_max_quality?(item)
         end
 
       end
-
 
     end
   end
@@ -56,27 +41,31 @@ class GildedRose
     item.sell_in < 0
   end
 
-  def check_if_sulfuras_sell_in(item)
-    item.name == SULFURAS ? item.sell_in : lower_sell_in(item)
+  def lower_sell_in(item)
+    item.name == SULFURAS ? item.sell_in : decrease_sell_in(item)
   end
 
-  def check_if_sulfuras_quality(item)
+  def sulfuras_quality(item)
     item.name == SULFURAS ? item.quality : decrease_quality(item)
   end
 
-  def decrease_if_not_sulfuras(item)
-    item.quality > MIN_QUALITY ? check_if_sulfuras_quality(item) : item.quality
+  def check_quality(item)
+    generic_item(item) ? reached_min_quality?(item) : reached_max_quality?(item)
   end
 
-  def lower_sell_in(item)
+  def decrease_if_not_sulfuras(item)
+    item.quality > MIN_QUALITY ? sulfuras_quality(item) : item.quality
+  end
+
+  def decrease_sell_in(item)
     item.sell_in -= 1
   end
 
-  def check_max_quality(item)
+  def reached_max_quality?(item)
     item.quality < MAX_QUALITY ? increase_quality(item) : item.quality
   end
 
-  def check_min_quality(item)
+  def reached_min_quality?(item)
     item.quality > MIN_QUALITY ? decrease_quality(item) : item.quality
   end
 
