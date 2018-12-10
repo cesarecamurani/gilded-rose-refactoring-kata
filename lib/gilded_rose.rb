@@ -1,92 +1,89 @@
 class GildedRose
+
   AGED_BRIE = "Aged Brie"
   BACKSTAGE_PASS = "Backstage pass for a Metallica concert"
   SULFURAS = "Sulfuras, Hand of Ragnaros"
-  MIN_QUALITY = 0
   MAX_QUALITY = 50
+  MIN_QUALITY = 0
 
   def initialize(items)
     @items = items
   end
 
-  def update_generic_item_quality(item)
-    if item.quality > MIN_QUALITY
-      expired(item) ? item.quality -= 2 : item.quality -= 1
+  def update_quality()
+    @items.each do |item|
+      if item.name != AGED_BRIE and item.name != BACKSTAGE_PASS and item.name != SULFURAS
+
+        if item.quality > MIN_QUALITY
+          decrease_quality(item)
+        end
+
+      else
+        if item.quality < MAX_QUALITY
+          increase_quality(item)
+
+          if item.name == BACKSTAGE_PASS
+
+            if backstage_quality_less_than_10(item)
+              increase_quality(item)
+            end
+
+            if backstage_quality_less_than_5(item)
+              increase_quality(item)
+            end
+
+          end
+
+        end
+      end
+
+      if item.name != SULFURAS
+        lower_sell_in(item)
+      end
+
+      if item.sell_in < MIN_QUALITY
+        if item.name != AGED_BRIE
+          if item.name != BACKSTAGE_PASS
+            if item.quality > MIN_QUALITY
+              if item.name != SULFURAS
+                decrease_quality(item)
+              end
+            end
+          else
+            item.quality -= item.quality
+          end
+        else
+          if item.quality < MAX_QUALITY
+            increase_quality(item)
+          end
+        end
+      end
     end
   end
 
-  def update_aged_brie(item)
-    if item.quality < 49 && expired(item)
-      item.quality += 2
-    elsif item.quality < 50
-      item.quality += 1
-    end
-  end
 
-  def update_sulfuras(item)
-    return item.quality, item.sell_in
-  end
+def lower_sell_in(item)
+  item.sell_in -= 1
+end
 
-  def update_backstage_pass(item)
-    if expired(item)
-      item.quality -= item.quality
-    elsif item.quality < (MAX_QUALITY - 2) && item.sell_in < 6
-      item.quality += 3
-    elsif item.quality < (MAX_QUALITY - 1) && item.sell_in <= 10
-      item.quality += 2
-    elsif item.quality < MAX_QUALITY && item.sell_in > 10
-      item.quality += 1
-    end
-  end
+def increase_quality(item)
+  item.quality += 1
+end
 
-  def expired(item)
-    item.sell_in <= 0
-  end
+def decrease_quality(item)
+  item.quality -= 1
+end
 
-  #   @items.each do |item|
-  #     if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert"
-  #       if item.quality > 0
-  #         if item.name != "Sulfuras, Hand of Ragnaros"
-  #           item.quality = item.quality - 1
-  #         end
-  #       end
-  #     else
-  #       if item.quality < 50
-  #         item.quality = item.quality + 1
-  #         if item.name == "Backstage passes to a TAFKAL80ETC concert"
-  #           if item.sell_in < 11
-  #             if item.quality < 50
-  #               item.quality = item.quality + 1
-  #             end
-  #           end
-  #           if item.sell_in < 6
-  #             if item.quality < 50
-  #               item.quality = item.quality + 1
-  #             end
-  #           end
-  #         end
-  #       end
-  #     end
-  #     if item.name != "Sulfuras, Hand of Ragnaros"
-  #       item.sell_in = item.sell_in - 1
-  #     end
-  #     if item.sell_in < 0
-  #       if item.name != "Aged Brie"
-  #         if item.name != "Backstage passes to a TAFKAL80ETC concert"
-  #           if item.quality > 0
-  #             if item.name != "Sulfuras, Hand of Ragnaros"
-  #               item.quality = item.quality - 1
-  #             end
-  #           end
-  #         else
-  #           item.quality = item.quality - item.quality
-  #         end
-  #       else
-  #         if item.quality < 50
-  #           item.quality = item.quality + 1
-  #         end
-  #       end
-  #     end
-  #   end
-  # end
+def backstage_quality_less_than_10(item)
+  item.sell_in < 11 && item.quality < MAX_QUALITY
+end
+
+def backstage_quality_less_than_5(item)
+  item.sell_in < 6 && item.quality < MAX_QUALITY
+end
+
+
+
+
+
 end
