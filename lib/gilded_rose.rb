@@ -20,10 +20,7 @@ class GildedRose
   end
 
   def check_if_backstage(item)
-    if item.name == BACKSTAGE_PASS
-      increase_if_ten_to_six(item)
-      increase_if_five_to_zero(item)
-    end
+    increase_if_ten_to_six(item) && increase_if_five_to_zero(item) if item.name == BACKSTAGE_PASS
   end
 
   def expired(item)
@@ -35,9 +32,7 @@ class GildedRose
   end
 
   def check_is_aged_brie(item)
-    if expired(item)
-      item.name == AGED_BRIE ? reached_max_quality?(item) : is_backstage_pass?(item)
-    end
+    (item.name == AGED_BRIE ? reached_max_quality?(item) : is_backstage_pass?(item)) if expired(item)
   end
 
   def lower_sell_in(item)
