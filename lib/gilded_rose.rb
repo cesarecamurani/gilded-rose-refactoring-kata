@@ -12,26 +12,19 @@ class GildedRose
 
   def update_quality()
     @items.each do |item|
-
       lower_sell_in(item)
-      check_quality(item)
-
-      if item.name == BACKSTAGE_PASS
-        increase_if_ten_to_six(item)
-        increase_if_five_to_zero(item)
-      end
-
-      if expired(item)
-
-        item.name == AGED_BRIE ? reached_max_quality?(item) : is_backstage_pass?(item)
-
-      end
-
+      check_general_quality(item)
+      check_if_backstage(item)
+      check_is_aged_brie(item)
     end
   end
 
-
-
+  def check_if_backstage(item)
+    if item.name == BACKSTAGE_PASS
+      increase_if_ten_to_six(item)
+      increase_if_five_to_zero(item)
+    end
+  end
 
   def expired(item)
     item.sell_in < 0
@@ -39,6 +32,12 @@ class GildedRose
 
   def is_backstage_pass?(item)
     item.name == BACKSTAGE_PASS ? set_quality_to_zero(item) : decrease_if_not_sulfuras(item)
+  end
+
+  def check_is_aged_brie(item)
+    if expired(item)
+      item.name == AGED_BRIE ? reached_max_quality?(item) : is_backstage_pass?(item)
+    end
   end
 
   def lower_sell_in(item)
@@ -49,7 +48,7 @@ class GildedRose
     item.name == SULFURAS ? item.quality : decrease_quality(item)
   end
 
-  def check_quality(item)
+  def check_general_quality(item)
     generic_item(item) ? reached_min_quality?(item) : reached_max_quality?(item)
   end
 
