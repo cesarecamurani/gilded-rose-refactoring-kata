@@ -23,11 +23,7 @@ class GildedRose
 
       if expired(item)
 
-        if item.name != AGED_BRIE
-          item.name == BACKSTAGE_PASS ? set_quality_to_zero(item) : decrease_if_not_sulfuras(item)
-        else
-          reached_max_quality?(item)
-        end
+        item.name == AGED_BRIE ? reached_max_quality?(item) : is_backstage_pass?(item)
 
       end
 
@@ -39,6 +35,10 @@ class GildedRose
 
   def expired(item)
     item.sell_in < 0
+  end
+
+  def is_backstage_pass?(item)
+    item.name == BACKSTAGE_PASS ? set_quality_to_zero(item) : decrease_if_not_sulfuras(item)
   end
 
   def lower_sell_in(item)
@@ -82,11 +82,11 @@ class GildedRose
   end
 
   def backstage_quality_less_than_ten(item)
-    item.sell_in < 11 && item.quality < MAX_QUALITY
+    item.sell_in <= 10 && item.quality < MAX_QUALITY
   end
 
   def backstage_quality_less_than_five(item)
-    item.sell_in < 6 && item.quality < MAX_QUALITY
+    item.sell_in <= 5 && item.quality < MAX_QUALITY
   end
 
   def increase_if_ten_to_six(item)
