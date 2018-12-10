@@ -13,6 +13,8 @@ class GildedRose
   def update_quality()
     @items.each do |item|
 
+      check_for_sulfuras(item)
+
       if generic_item(item)
         check_min_quality(item)
       else
@@ -26,17 +28,17 @@ class GildedRose
         end
       end
 
-      if item.name != SULFURAS
-        lower_sell_in(item)
-      end
 
-      if item.sell_in < 0
+
+
+
+      if expired(item)
 
         if item.name != AGED_BRIE
           if item.name != BACKSTAGE_PASS
 
             if item.quality > MIN_QUALITY
-              item.name != SULFURAS ? decrease_quality(item) : item.quality
+              item.name == SULFURAS ? item.quality : decrease_quality(item)
             end
 
           else
@@ -53,6 +55,13 @@ class GildedRose
     end
   end
 
+  def expired(item)
+    item.sell_in < 0
+  end
+
+  def check_for_sulfuras(item)
+    item.name == SULFURAS ? item.sell_in : lower_sell_in(item)
+  end
 
   def lower_sell_in(item)
     item.sell_in -= 1
@@ -85,6 +94,7 @@ class GildedRose
   def generic_item(item)
     item.name != AGED_BRIE and item.name != BACKSTAGE_PASS and item.name != SULFURAS
   end
+
 
 
 
