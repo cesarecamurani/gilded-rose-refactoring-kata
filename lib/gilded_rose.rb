@@ -12,15 +12,12 @@ class GildedRose
 
   def update_quality()
     @items.each do |item|
-      if item.name != AGED_BRIE and item.name != BACKSTAGE_PASS and item.name != SULFURAS
 
-        if item.quality > MIN_QUALITY
-          decrease_quality(item)
-        end
+      if generic_item(item)
+        item.quality > MIN_QUALITY ? decrease_quality(item) : item.quality
+        else
+         check_quality(item)
 
-      else
-        if item.quality < MAX_QUALITY
-          increase_quality(item)
 
           if item.name == BACKSTAGE_PASS
 
@@ -34,55 +31,64 @@ class GildedRose
 
           end
 
-        end
+
       end
 
       if item.name != SULFURAS
         lower_sell_in(item)
       end
 
-      if item.sell_in < MIN_QUALITY
+      if item.sell_in < 0
+
         if item.name != AGED_BRIE
           if item.name != BACKSTAGE_PASS
+
             if item.quality > MIN_QUALITY
-              if item.name != SULFURAS
-                decrease_quality(item)
-              end
+              item.name != SULFURAS ? decrease_quality(item) : item.quality
             end
+
           else
             item.quality -= item.quality
           end
+
         else
-          if item.quality < MAX_QUALITY
-            increase_quality(item)
-          end
+          check_quality(item)
         end
+
       end
+
+
     end
   end
 
 
-def lower_sell_in(item)
-  item.sell_in -= 1
-end
+  def lower_sell_in(item)
+    item.sell_in -= 1
+  end
 
-def increase_quality(item)
-  item.quality += 1
-end
+  def check_quality(item)
+    item.quality < MAX_QUALITY ? increase_quality(item) : item.quality
+  end
 
-def decrease_quality(item)
-  item.quality -= 1
-end
+  def increase_quality(item)
+    item.quality += 1
+  end
 
-def backstage_quality_less_than_10(item)
-  item.sell_in < 11 && item.quality < MAX_QUALITY
-end
+  def decrease_quality(item)
+    item.quality -= 1
+  end
 
-def backstage_quality_less_than_5(item)
-  item.sell_in < 6 && item.quality < MAX_QUALITY
-end
+  def backstage_quality_less_than_10(item)
+    item.sell_in < 11 && item.quality < MAX_QUALITY
+  end
 
+  def backstage_quality_less_than_5(item)
+    item.sell_in < 6 && item.quality < MAX_QUALITY
+  end
 
+  def generic_item(item)
+    item.name != AGED_BRIE and item.name != BACKSTAGE_PASS and item.name != SULFURAS
+  end
 
 
 
