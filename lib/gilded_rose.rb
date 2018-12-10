@@ -14,24 +14,16 @@ class GildedRose
     @items.each do |item|
 
       if generic_item(item)
-        item.quality > MIN_QUALITY ? decrease_quality(item) : item.quality
-        else
-         check_quality(item)
+        check_min_quality(item)
+      else
+        check_max_quality(item)
+        if item.name == BACKSTAGE_PASS
 
+           backstage_quality_less_than_10(item) ? increase_quality(item) : item.quality
 
-          if item.name == BACKSTAGE_PASS
+           backstage_quality_less_than_5(item) ? increase_quality(item) : item.quality
 
-            if backstage_quality_less_than_10(item)
-              increase_quality(item)
-            end
-
-            if backstage_quality_less_than_5(item)
-              increase_quality(item)
-            end
-
-          end
-
-
+        end
       end
 
       if item.name != SULFURAS
@@ -52,7 +44,7 @@ class GildedRose
           end
 
         else
-          check_quality(item)
+          check_max_quality(item)
         end
 
       end
@@ -66,8 +58,12 @@ class GildedRose
     item.sell_in -= 1
   end
 
-  def check_quality(item)
+  def check_max_quality(item)
     item.quality < MAX_QUALITY ? increase_quality(item) : item.quality
+  end
+
+  def check_min_quality(item)
+    item.quality > MIN_QUALITY ? decrease_quality(item) : item.quality
   end
 
   def increase_quality(item)
