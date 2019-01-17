@@ -6,14 +6,14 @@ class GildedRose
   MAX_QUALITY = 50
   MIN_QUALITY = 0
 
-  def initialize(items)
-    @items = items
+  def initialize(inventory)
+    @inventory = inventory
   end
 
-  def update_quality()
-    @items.each do |item|
+  def update_quality
+    @inventory.each do |item|
       lower_sell_in(item)
-      update_generic_item(item)
+      update_item(item)
       update_backstage_pass(item)
       update_aged_brie(item)
     end
@@ -23,8 +23,8 @@ class GildedRose
     item.name == SULFURAS ? item.sell_in : item.sell_in -= 1
   end
 
-  def update_generic_item(item)
-    generic_item(item) ? above_min_quality?(item) : below_max_quality?(item)
+  def update_item(item)
+    item(item) ? above_min_quality?(item) : below_max_quality?(item)
   end
 
   def update_backstage_pass(item)
@@ -32,14 +32,14 @@ class GildedRose
   end
 
   def update_aged_brie(item)
-    (item.name == AGED_BRIE ? below_max_quality?(item) : is_backstage_pass?(item)) if expired(item)
+    (item.name == AGED_BRIE ? below_max_quality?(item) : backstage_pass?(item)) if expired(item)
   end
 
   def expired(item)
     item.sell_in < 0
   end
 
-  def is_backstage_pass?(item)
+  def backstage_pass?(item)
     item.name == BACKSTAGE_PASS ? set_quality_to_zero(item) : above_min_quality?(item)
   end
 
@@ -79,11 +79,8 @@ class GildedRose
     backstage_sell_in_less_than_five(item) ? increase_quality(item) : item.quality
   end
 
-  def generic_item(item)
-    item.name != AGED_BRIE and item.name != BACKSTAGE_PASS and item.name != SULFURAS
+  def item(item)
+    item.name != AGED_BRIE && item.name != BACKSTAGE_PASS && item.name != SULFURAS
   end
-
-
-
 
 end
